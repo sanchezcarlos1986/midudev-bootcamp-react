@@ -1,16 +1,14 @@
 describe("Note App", () => {
+  const user = {
+    name: "Carlos",
+    username: "sanchezcarlos",
+    password: "これは私のpass",
+  };
+
   describe("when NOTlogged in", () => {
     beforeEach(() => {
       cy.visit("http://localhost:3000");
-
       cy.request("POST", "http://localhost:3001/api/testing/reset");
-
-      const user = {
-        name: "Carlos",
-        username: "sanchezcarlos",
-        password: "これは私のpass",
-      };
-
       cy.request("POST", "http://localhost:3001/api/users", user);
     });
 
@@ -24,15 +22,15 @@ describe("Note App", () => {
 
     it("user can login", () => {
       cy.contains("Show Login").click();
-      cy.get('[placeholder="Username"]').type("sanchezcarlos");
-      cy.get('[placeholder="Password"]').last().type("これは私のpass");
+      cy.get('[placeholder="Username"]').type(user.username);
+      cy.get('[placeholder="Password"]').last().type(user.password);
       cy.get("#form-login-button").click();
       cy.contains("Create a new note");
     });
 
     it("login fails with wrong password", () => {
       cy.contains("Show Login").click();
-      cy.get('[placeholder="Username"]').type("sanchezcarlos");
+      cy.get('[placeholder="Username"]').type(user.username);
       cy.get('[placeholder="Password"]').last().type("password-incorrecta");
       cy.get("#form-login-button").click();
 
@@ -45,7 +43,7 @@ describe("Note App", () => {
 
   describe("when logged in", () => {
     beforeEach(() => {
-      cy.login({ username: "sanchezcarlos", password: "これは私のpass" });
+      cy.login({ username: user.username, password: user.password });
     });
 
     it("a new note can be created", () => {
